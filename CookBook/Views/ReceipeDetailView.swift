@@ -12,12 +12,31 @@ struct ReceipeDetailView: View {
     let receipe: Receipe
     
     var body: some View {
-        VStack {
-            Image(receipe.image)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(height: 250)
-                .clipped()
+        VStack(alignment: .leading) { 
+
+//            if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
+//                Image(receipe.image)
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fill)
+//                    .frame(height: 250)
+//                    .clipped()
+//            } else {
+                AsyncImage(url: URL(string: receipe.image)) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 250)
+                        .clipped()
+                } placeholder: {
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.gray)
+                            .frame(height: 250)
+                        Image(systemName: "photo.fill")
+                    }
+                }
+//            }
+
             HStack {
                 Text(receipe.name)
                     .font(.system(size: 22, weight: .semibold))
@@ -35,9 +54,15 @@ struct ReceipeDetailView: View {
                 .padding(.horizontal)
             Spacer()
         }
+        
+        .onAppear {
+            for (key, value) in ProcessInfo.processInfo.environment {
+                print("\(key): \(value)")
+            }
+        }
     }
 }
 
 #Preview {
-    ReceipeDetailView(receipe: Receipe.mockReceipes[0])
+    ReceipeDetailView(receipe: Receipe.mockReceipes[2])
 }

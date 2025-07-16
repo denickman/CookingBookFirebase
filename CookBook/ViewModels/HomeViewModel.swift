@@ -33,34 +33,38 @@ class HomeViewModel {
            let receipesResult = try await Firestore.firestore().collection("receipes").whereField("userId", isEqualTo: userID)
                 .getDocuments()
             
-            for receipeDocument in receipesResult.documents {
-                let data = receipeDocument.data()
-                
-                guard let imageLocation = data["image"] as? String else {
-                    continue
-                }
-                
-                guard let instruction = data["instructions"] as? String else {
-                    continue
-                }
-                
-                guard let name = data["name"] as? String else {
-                    continue
-                }
-                
-                guard let time = data["time"] as? Int else {
-                    continue
-                }
-                
-                guard let userId = data["userId"] as? String else {
-                    continue
-                }
-                
-                let id = receipeDocument.documentID
-                let receipe = Receipe(id: id, name: name, image: imageLocation, instructions: instruction, time: time, userId: userID)
-                
-                receipes.append(receipe)
-            } 
+            receipes = receipesResult.documents.compactMap {
+                Receipe(snapshot: $0)
+            }
+            
+//            for receipeDocument in receipesResult.documents {
+//                let data = receipeDocument.data()
+//                
+//                guard let imageLocation = data["image"] as? String else {
+//                    continue
+//                }
+//                
+//                guard let instruction = data["instructions"] as? String else {
+//                    continue
+//                }
+//                
+//                guard let name = data["name"] as? String else {
+//                    continue
+//                }
+//                
+//                guard let time = data["time"] as? Int else {
+//                    continue
+//                }
+//                
+//                guard let userId = data["userId"] as? String else {
+//                    continue
+//                }
+//                
+//                let id = receipeDocument.documentID
+//                let receipe = Receipe(id: id, name: name, image: imageLocation, instructions: instruction, time: time, userId: userID)
+//                
+//                receipes.append(receipe)
+//            } 
         } catch {
             
         }

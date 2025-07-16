@@ -9,40 +9,8 @@ struct HomeView: View {
     
     @State var viewModel = HomeViewModel()
     @Environment(SessionManager.self) var sessionManager: SessionManager
-    
-    fileprivate func ReceipeRow(receipe: Receipe) -> some View {
-        VStack(alignment: .leading) {
-            
-            AsyncImage(url: URL(string: receipe.image)) { img in
-                img.resizable()
-                    .resizable()
-                    .scaledToFill()
-                   // .aspectRatio(contentMode: .fill)
-                    .frame(width: itemWidth, height: itemHeight)
-                    .clipShape(RoundedRectangle(cornerRadius: 5.0))
-                   // .clipped()
-            } placeholder: {
-                VStack {
-                    ProgressView()
-                }
-                .frame(width: itemWidth, height: itemHeight)
-            }
 
-            
-//            Image(receipe.image)
-//                .resizable()
-//                .aspectRatio(contentMode: .fill)
-//                .frame(width: itemWidth, height: itemHeight)
-//                .clipShape(RoundedRectangle(cornerRadius: 8))
-//                .clipped()
-            Text(receipe.name)
-                .lineLimit(1)
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(.black)
-        }
-    }
-    
-    let spacing: CGFloat = 5
+    let spacing: CGFloat = 10
     let padding: CGFloat = 5
     
     let columns = [
@@ -67,7 +35,11 @@ struct HomeView: View {
                 ScrollView {
                     LazyVGrid(columns: columns) {
                         ForEach(viewModel.receipes) { receipe in
-                            ReceipeRow(receipe: receipe)
+                            NavigationLink {
+                                ReceipeDetailView(receipe: receipe)
+                            } label: {
+                                ReceipeRow(receipe: receipe)
+                            }
                         }
                     }
                     .padding(padding)
@@ -118,6 +90,39 @@ struct HomeView: View {
         .sheet(isPresented: $viewModel.showAddReceipeView, content: {
             AddReceipeView()
         })
+    }
+    
+    
+    fileprivate func ReceipeRow(receipe: Receipe) -> some View {
+        VStack(alignment: .leading) {
+            
+            AsyncImage(url: URL(string: receipe.image)) { img in
+                img.resizable()
+                    .resizable()
+                    .scaledToFill()
+                   // .aspectRatio(contentMode: .fill)
+                    .frame(width: itemWidth, height: itemHeight)
+                    .clipShape(RoundedRectangle(cornerRadius: 5.0))
+                   // .clipped()
+            } placeholder: {
+                VStack {
+                    ProgressView()
+                }
+                .frame(width: itemWidth, height: itemHeight)
+            }
+
+            
+//            Image(receipe.image)
+//                .resizable()
+//                .aspectRatio(contentMode: .fill)
+//                .frame(width: itemWidth, height: itemHeight)
+//                .clipShape(RoundedRectangle(cornerRadius: 8))
+//                .clipped()
+            Text(receipe.name)
+                .lineLimit(1)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(.black)
+        }
     }
     
 }
